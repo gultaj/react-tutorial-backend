@@ -24,3 +24,10 @@ $app->get('/users', function(Request $request) {
 
 	return response()->json($users)->setCallback($request->input('callback'));
 });
+
+$app->post('/auth/login', function(Request $request) {
+	if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('email')])) {
+		return response(Auth::user());
+	}
+	return null;
+});
