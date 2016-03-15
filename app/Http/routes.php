@@ -26,8 +26,15 @@ $app->get('/users', function(Request $request) {
 });
 
 $app->post('/auth/login', function(Request $request) {
-	if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('email')])) {
-		return response(Auth::user());
-	}
-	return null;
+	return response(Auth::check());
+	$a = Auth::attempt([
+		'email' => 'Linda12@Hermann.com',
+		'password' => 'secret',
+		'active' => '1'
+	]);
+	return  $a;
+	// 	return response(['success']);
+	// 	// return response(Auth::user())->header('Access-Control-Allow-Origin', '*');
+
+	// return null;
 });

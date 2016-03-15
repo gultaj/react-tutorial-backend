@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
@@ -14,13 +15,16 @@ class User extends Model implements
 {
     use Authenticatable, Authorizable;
 
+
+
+    protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'nickname', 'email',
+        'nickname', 'email', 'password'
     ];
 
     /**
@@ -35,5 +39,10 @@ class User extends Model implements
     public function comments()
     {
         return $this->hasMany(\App\Comment::class);
+    }
+
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = Hash::make($password);
     }
 }

@@ -18,6 +18,7 @@ $factory->define(App\User::class, function ($faker) {
     return [
         'nickname' => $faker->name,
         'email' => $faker->email,
+        'password' => 'secret'
     ];
 });
 
