@@ -7,8 +7,11 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('/comments', function(Request $request) {
-	$comments = App\Comment::orderBy('created_at', 'desc')->with('author')->get()->all();
+	$comments = App\Comment::orderBy('created_at', 'desc')->with('author')->get();
+	$ids = $comments->lists('user_id')->unique()->sort()->values();
+	$authors = App\User::select('id','nickname')->whereIn('id', $ids)->get();
 
+	return response()->json($comments)->header('Access-Control-Allow-Origin', '*');
 	return response()->json($comments)->setCallback($request->input('callback'));
 });
 
@@ -23,7 +26,7 @@ $app->post('/comments', function(Request $request) {
 $app->get('/users', function(Request $request) {
 	$users = App\User::select('id', 'nickname')->get();
 
-	return response()->json($users)->setCallback($request->input('callback'));
+	return response()->json($users)->header('Access-Control-Allow-Origin', '*');//->setCallback($request->input('callback'));
 });
 
 $app->post('/auth/login', function(Request $request) {
