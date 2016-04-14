@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use App\Models\Comments;
+use App\Models\Post;
+use App\Models\Message;
+use App\Models\Like;
 
 class User extends Model implements
     AuthenticatableContract,
@@ -38,7 +42,27 @@ class User extends Model implements
 
     public function comments()
     {
-        return $this->hasMany(\App\Comment::class);
+        return $this->hasMany(Comment::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function sendMessages()
+    {
+        return $this->hasMany(Message::class, 'from_user_id');
+    }
+
+    public function getMessages()
+    {
+        return $this->hasMany(Message::class, 'to_user_id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
     }
 
     public function setPasswordAttribute($password)

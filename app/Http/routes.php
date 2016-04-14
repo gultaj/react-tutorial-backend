@@ -30,25 +30,14 @@ $app->get('/users', function(Request $request) {
 });
 
 $app->post('/auth/login', ['uses' => 'AuthController@login']);
-// $app->post('/auth/login', function(Request $request) {
-// 	// return response($request->only('email', 'password'))->header('Access-Control-Allow-Origin', '*');
-// 	if ($user = App\User::where('email', $request->input('email'))->first()) {
-// 		if (Hash::check($request->input('password'), $user->password)) {
-// 			$user->remember_token = bin2hex(random_bytes(50));
-// 			$user->save();
-// 			$user = collect($user)->only('id', 'nickname', 'remember_token');
-// 			return response(['success' => true, 'user' => $user])->header('Access-Control-Allow-Origin', '*');
-// 		}
-// 	}
-// 	return response(['success' => false, 'message' => 'Invalid username or password.'])->header('Access-Control-Allow-Origin', '*');
-// });
+$app->post('/auth/logout', ['uses' => 'AuthController@logout']);
 
-$app->post('/auth/logout', function(Request $request) {
-	if ($user = App\User::where('remember_token', $request->input('remember_token'))->first()) {
-		$user->remember_token = null;
-		$user->save();
-		return response(['logout'])->header('Access-Control-Allow-Origin', '*');
-	}
-	return response([$request->input('remember_token')])->header('Access-Control-Allow-Origin', '*');
-	return null;
-});
+//$app->post('/auth/logout', function(Request $request) {
+	// if ($user = App\User::where('remember_token', $request->input('remember_token'))->first()) {
+	// 	$user->remember_token = null;
+	// 	$user->save();
+	// 	return response(['logout'])->header('Access-Control-Allow-Origin', '*');
+	// }
+	// return response([$request->input('remember_token')])->header('Access-Control-Allow-Origin', '*');
+	// return null;
+//});

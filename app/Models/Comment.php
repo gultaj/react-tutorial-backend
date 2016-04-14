@@ -1,8 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Like;
 
 class Comment extends Model {
 
@@ -15,17 +16,13 @@ class Comment extends Model {
         'user_id', 'text',
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    // protected $hidden = [
-    //     'password',
-    // ];
-
     public function author()
     {
         return $this->belongsTo(\App\User::class, 'user_id')->select('id', 'nickname');
+    }
+
+    public function like()
+    {
+        return $this->morphMany(Like::class, 'likeable');
     }
 }
