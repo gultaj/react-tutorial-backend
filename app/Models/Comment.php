@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Like;
+use App\Models\User;
 
 class Comment extends Model {
 
@@ -18,7 +19,7 @@ class Comment extends Model {
 
     public function author()
     {
-        return $this->belongsTo(\App\User::class, 'user_id')->select('id', 'nickname');
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'nickname');
     }
 
     public function like()
