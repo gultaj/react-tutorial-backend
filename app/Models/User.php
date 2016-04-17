@@ -12,6 +12,8 @@ use App\Models\Comments;
 use App\Models\Post;
 use App\Models\Message;
 use App\Models\Like;
+use App\Models\Follow;
+use App\Models\Conversation;
 
 class User extends Model implements
     AuthenticatableContract,
@@ -31,15 +33,6 @@ class User extends Model implements
         'nickname', 'email', 'password'
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    // protected $hidden = [
-    //     'password',
-    // ];
-
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -50,12 +43,23 @@ class User extends Model implements
         return $this->hasMany(Post::class);
     }
 
-    public function sendMessages()
+    public function conversationsOne()
     {
-        return $this->hasMany(Message::class, 'from_user_id');
+        return $this->hasMany(Conversation::class, 'user_one');
     }
 
-    public function getMessages()
+    public function conversationsTwo()
+    {
+        return $this->hasMany(Conversation::class, 'user_two');
+    }
+
+    public function scopeConversations($query)
+    {
+        return $query->where('conversationsOne', 'conversationsTwo');
+        return $query->with('conversationsOne', 'conversationsTwo');
+    }
+
+    public function messages()
     {
         return $this->hasMany(Message::class, 'to_user_id');
     }
@@ -65,8 +69,18 @@ class User extends Model implements
         return $this->hasMany(Like::class);
     }
 
+    public function follower()
+    {
+        return $this->hasMany(Follow::class);
+    }
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = Hash::make($password);
+    }
+
+    public function getAvatarAttribute($value)
+    {
+        return 'uploads/'.$value;
     }
 }

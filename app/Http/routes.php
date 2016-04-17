@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Conversation;
 
 $app->get('/', function () use ($app) {
     return $app->version();
@@ -27,6 +29,11 @@ $app->get('/users', function(Request $request) {
 	$users = App\Models\User::select('id', 'nickname')->get();
 
 	return response()->json($users)->header('Access-Control-Allow-Origin', '*');//->setCallback($request->input('callback'));
+});
+
+$app->get('/messages/{user_id}', function($user_id) {
+	$conversations = Conversation::byUser($user_id)->with('messages','user_one','user_two')->get();
+	return response($conversations);
 });
 
 $app->post('/auth/login', ['uses' => 'AuthController@login']);

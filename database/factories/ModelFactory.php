@@ -1,29 +1,41 @@
 <?php
+use App\Models\User;
+use App\Models\Message;
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Model factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
-
-$factory->define(App\User::class, function ($faker) {
+$factory->define(User::class, function ($faker) {
 	// $faker->addProvider(new Faker\Provider\ru_RU\Text($faker));
 	// $faker->addProvider(new Faker\Provider\ru_RU\Person($faker));
 
+    $avatars = [
+        'avatars/user1.png',
+        'avatars/user2.png',
+        'avatars/user3.png',
+        'avatars/user4.png'
+    ];
+
     return [
-        'nickname' => $faker->name,
+        'nickname' => $faker->userName,
         'email' => $faker->email,
-        'password' => 'secret'
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'avatar' => $faker->randomElement($avatars),
+        'password' => 'secret',
+        'created_at' => $faker->dateTimeBetween('-1 years', 'now')
     ];
 });
 
-$factory->define(App\Comment::class, function ($faker) {
+
+
+$factory->define(Message::class, function($faker) {
     return [
-        'text' => $faker->text
+        'message' => $faker->text($faker->numberBetween(50, 200)),
+        'unreaded' => $faker->numberBetween(0, 1),
+        'created_at' => $faker->dateTimeBetween('-1 years', 'now')
     ];
 });
+
+// $factory->define(App\Comment::class, function ($faker) {
+//     return [
+//         'text' => $faker->text
+//     ];
+// });
