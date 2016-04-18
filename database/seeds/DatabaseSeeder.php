@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     	Model::unguard();
 
         $this->call(UsersTableSeeder::class);
+        $this->call(ConversationsTableSeeder::class);
         $this->call(MessagesTableSeeder::class);
         // $this->call(CommentsTableSeeder::class);
     }

@@ -2,9 +2,24 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Message;
 use App\Models\Conversation;
 
 $app->get('/', function () use ($app) {
+
+	// $user = User::find(1);
+	// $toUser = User::find(10);
+	// $conversation = Conversation::create();
+	// $conversation->users()->saveMany([$user, $toUser]);
+	// $message = Message::create(['message' => 'Привет']);
+	// $message->user()->associate($user)->save();
+	// $message->sender()->associate($toUser)->save();
+	// $message->conversation()->associate($conversation->id)->save();
+	$user = User::with(['conversations' => function($query) {
+		$query->where('user_id', 10);
+	}])->find(1);
+
+	return $user;
     return $app->version();
 });
 
@@ -31,20 +46,16 @@ $app->get('/users', function(Request $request) {
 	return response()->json($users)->header('Access-Control-Allow-Origin', '*');//->setCallback($request->input('callback'));
 });
 
-$app->get('/messages/{user_id}', function($user_id) {
-	$conversations = Conversation::byUser($user_id)->with('messages','user_one','user_two')->get();
-	return response($conversations);
+$app->get('/conversations/{user_id}', function($user_id) {
+	$conversations = Conversation::where('user_one', $user_id)->select('user_two', 'id')->with('user')->get();
+
+	// $conversations->transform(function($item, $key) {
+	// 	return $item['user_two'];
+	// });
+	// $conversations = Conversation::byUser($user_id)->with('user_one','user_two')->get();
+	return response($conversations)->header('Access-Control-Allow-Origin', '*');
 });
 
 $app->post('/auth/login', ['uses' => 'AuthController@login']);
 $app->post('/auth/logout', ['uses' => 'AuthController@logout']);
 
-//$app->post('/auth/logout', function(Request $request) {
-	// if ($user = App\User::where('remember_token', $request->input('remember_token'))->first()) {
-	// 	$user->remember_token = null;
-	// 	$user->save();
-	// 	return response(['logout'])->header('Access-Control-Allow-Origin', '*');
-	// }
-	// return response([$request->input('remember_token')])->header('Access-Control-Allow-Origin', '*');
-	// return null;
-//});

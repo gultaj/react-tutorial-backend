@@ -23,10 +23,19 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
+if (env('APP_DEBUG')) {
+    $app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
+    $app->configure('debugbar');
+}
+
+
+
 $app->withFacades();
 
 $app->withEloquent();
 
+
+DB::enableQueryLog();
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
