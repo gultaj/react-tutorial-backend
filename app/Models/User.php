@@ -33,6 +33,8 @@ class User extends Model implements
         'nickname', 'email', 'password'
     ];
 
+    protected $hidden = ['pivot'];
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -72,5 +74,10 @@ class User extends Model implements
     public function getAvatarAttribute($value)
     {
         return 'uploads/'.$value;
+    }
+
+    public function getHaveConversationWithAttribute($value, $user_id)
+    {
+        return $this->conversations->intersect(static::find($user_id)->conversations);
     }
 }

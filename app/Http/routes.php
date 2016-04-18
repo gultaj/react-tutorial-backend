@@ -15,11 +15,10 @@ $app->get('/', function () use ($app) {
 	// $message->user()->associate($user)->save();
 	// $message->sender()->associate($toUser)->save();
 	// $message->conversation()->associate($conversation->id)->save();
-	$user = User::with(['conversations' => function($query) {
-		$query->where('user_id', 10);
-	}])->find(1);
-
-	return $user;
+	// $user = User::find(1)->conversations->intersect(User::find(10)->conversations)->first();
+	$user = User::find(1);
+	// return $user->conversations()->users()->get();
+	return $user->conversations()->withoutUser(1)->get();
     return $app->version();
 });
 
