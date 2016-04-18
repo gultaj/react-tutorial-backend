@@ -43,21 +43,11 @@ class User extends Model implements
         return $this->hasMany(Post::class);
     }
 
-    public function conversationsOne()
+    public function conversations()
     {
-        return $this->hasMany(Conversation::class, 'user_one');
+        return $this->belongsToMany(Conversation::class);
     }
 
-    public function conversationsTwo()
-    {
-        return $this->hasMany(Conversation::class, 'user_two');
-    }
-
-    public function scopeConversations($query)
-    {
-        return $query->where('conversationsOne', 'conversationsTwo');
-        return $query->with('conversationsOne', 'conversationsTwo');
-    }
 
     public function messages()
     {
