@@ -19,15 +19,16 @@ class MessagesTableSeeder extends Seeder
         $conversations = Conversation::get();
 
         foreach ($conversations as $conversation) {
+            $users = $conversation->users;
             for ($i = 0, $count = rand(1, 5); $i < $count; $i++) {
                 $message = factory(Message::class)->create();
                 $message->conversation_id = $conversation->id;
                 if (rand(0, 1)) {
-                    $message->to_user_id = $conversation->user_one;
-                    $message->from_user_id = $conversation->user_two;
+                    $message->to_user_id = $users[0]->id;
+                    $message->from_user_id = $users[1]->id;
                 } else {
-                    $message->to_user_id = $conversation->user_two;
-                    $message->from_user_id = $conversation->user_one;
+                    $message->to_user_id = $users[1]->id;
+                    $message->from_user_id = $users[0]->id;
                 }
                 $message->save();
             }

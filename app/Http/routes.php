@@ -7,18 +7,15 @@ use App\Models\Conversation;
 
 $app->get('/', function () use ($app) {
 
-	// $user = User::find(1);
-	// $toUser = User::find(10);
-	// $conversation = Conversation::create();
-	// $conversation->users()->saveMany([$user, $toUser]);
-	// $message = Message::create(['message' => 'Привет']);
-	// $message->user()->associate($user)->save();
-	// $message->sender()->associate($toUser)->save();
-	// $message->conversation()->associate($conversation->id)->save();
-	// $user = User::find(1)->conversations->intersect(User::find(10)->conversations)->first();
-	$user = User::find(1);
+	// $user = User::with('conversations.messages')->find(1);
+	// return DB::getQueryLog();
+	// return $user;
 	// return $user->conversations()->users()->get();
-	return $user->conversations()->withoutUser(1)->get();
+
+	$conversations = User::find(1)->conversations()->withoutUser(1)->messagesCount()->get();
+	// $conversations = Conversation::find(2)->messages;
+	return $conversations;
+
     return $app->version();
 });
 

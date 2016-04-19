@@ -9,6 +9,7 @@ use App\Models\Conversation;
 class Message extends Model {
 
 	protected $fillable = ['message'];
+	protected $hidden = ['conversation_id'];
 
     public function sender()
     {

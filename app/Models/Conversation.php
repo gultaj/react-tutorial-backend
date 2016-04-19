@@ -20,30 +20,26 @@ class Conversation extends Model {
 
     public function messages()
     {
-    	return $this->hasMany(Message::class, 'conversation_id');
+    	return $this->hasMany(Message::class);
+    }
+
+    public function scopeMessagesCount($query)
+    {
+        return $query->addSelect(\DB::raw(
+            'conversations.id as id,(select count(*) 
+            from messages 
+            where messages.conversation_id=conversations.id) 
+            as messages_count'
+        ));
     }
 
     public function scopeWithoutUser($query, $user_id)
     {
         return $query->with([
-            'messages', 
             'users' => function($q) use ($user_id) {
                 $q->where('user_id', '<>', $user_id);
             }
         ]);
     }
 
-    public function messagesCount()
-    {
-        return $this->hasOne(Message::class)
-            ->selectRaw('conversation_id, count(*) as count')->groupBy('conversation_id');
-    }
-
-    public function getMessagesCountAttribute($value)
-    {
-        if (! $this->relationLoaded('messagesCount')) $this->load('messagesCount');
-        $related = $this->getRelation('messagesCount')->first();
-
-        return $related ? (int) $related->count : 0;
-    }
 }
