@@ -18,6 +18,11 @@ class Conversation extends Model {
             ->select('users.id', 'users.nickname', 'users.first_name', 'users.last_name', 'users.avatar');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function messages()
     {
     	return $this->hasMany(Message::class);

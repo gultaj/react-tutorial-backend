@@ -6,16 +6,6 @@ use App\Models\Message;
 use App\Models\Conversation;
 
 $app->get('/', function () use ($app) {
-
-	// $user = User::with('conversations.messages')->find(1);
-	// return DB::getQueryLog();
-	// return $user;
-	// return $user->conversations()->users()->get();
-
-	$conversations = User::find(1)->conversations()->withoutUser(1)->messagesCount()->get();
-	// $conversations = Conversation::find(2)->messages;
-	return $conversations;
-
     return $app->version();
 });
 
@@ -25,7 +15,6 @@ $app->get('/comments', function(Request $request) {
 	$authors = App\Models\User::select('id','nickname')->whereIn('id', $ids)->get();
 
 	return response()->json($comments)->header('Access-Control-Allow-Origin', '*');
-	return response()->json($comments)->setCallback($request->input('callback'));
 });
 
 $app->post('/comments', function(Request $request) {
@@ -39,16 +28,16 @@ $app->post('/comments', function(Request $request) {
 $app->get('/users', function(Request $request) {
 	$users = App\Models\User::select('id', 'nickname')->get();
 
-	return response()->json($users)->header('Access-Control-Allow-Origin', '*');//->setCallback($request->input('callback'));
+	return response()->json($users)->header('Access-Control-Allow-Origin', '*');
 });
 
 $app->get('/conversations/{user_id}', function($user_id) {
-	$conversations = Conversation::where('user_one', $user_id)->select('user_two', 'id')->with('user')->get();
-
-	// $conversations->transform(function($item, $key) {
-	// 	return $item['user_two'];
-	// });
-	// $conversations = Conversation::byUser($user_id)->with('user_one','user_two')->get();
+	$conversations = User::find(1)->conversations()->withoutUser(1)->messagesCount()->get();
+	$conversations = $conversations->each(function($item) {
+		$item['user'] = $item['users'][0];
+		unset($item['users']);
+		return $item;
+	});
 	return response($conversations)->header('Access-Control-Allow-Origin', '*');
 });
 
