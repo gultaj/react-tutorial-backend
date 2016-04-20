@@ -8,9 +8,7 @@ use App\Models\Message;
 
 class Conversation extends Model {
 
-	protected $hidden = [
-        'pivot',
-    ];
+	// protected $hidden = ['pivot'];
 
     public function users()
     {
@@ -18,14 +16,14 @@ class Conversation extends Model {
             ->select('users.id', 'users.nickname', 'users.first_name', 'users.last_name', 'users.avatar');
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
     public function messages()
     {
     	return $this->hasMany(Message::class);
+    }
+
+    public function lastMessage()
+    {
+        return $this->hasOne(Message::class)->select('id', 'conversation_id', 'message', 'unreaded', 'created_at')->latest();
     }
 
     public function scopeMessagesCount($query)
@@ -41,10 +39,17 @@ class Conversation extends Model {
     public function scopeWithoutUser($query, $user_id)
     {
         return $query->with([
+            'lastMessage',
             'users' => function($q) use ($user_id) {
                 $q->where('user_id', '<>', $user_id);
             }
         ]);
+    }
+
+    public function toArray()
+    {
+        $this->setHidden(['pivot']);
+        return parent::toArray();
     }
 
 }

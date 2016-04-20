@@ -19,10 +19,13 @@ class ConversationsTableSeeder extends Seeder
         $users = User::get();
 
         foreach ($users as $user) {
-            for($i = 0, $count = rand(0, 10); $i < $count; $i++) {
+            for($i = 0, $count = rand(0, 5); $i < $count; $i++) {
                 $rUser = $users->random();
-                $conversation = $user->conversations->intersect($rUser->conversations)->first();
-                if (!$conversation) {
+                while ($rUser == $user) {
+                    $rUser = $users->random();
+                }
+                $conversation = $user->conversations->intersect($rUser->conversations);
+                if ($conversation->isEmpty()) {
                     $conversation = Conversation::create();
                     $conversation->users()->saveMany([$user, $rUser]);
                 }

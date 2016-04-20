@@ -6,6 +6,21 @@ use App\Models\Message;
 use App\Models\Conversation;
 
 $app->get('/', function () use ($app) {
+
+	$users = User::get();
+	dd(User::find(3)->conversations);
+    foreach ($users as $user) {
+        for($i = 0, $count = rand(0, 5); $i < $count; $i++) {
+            $rUser = $users->random();
+            $conversation = $user->conversations->intersect($rUser->conversations);
+            dd(!$conversation);
+            if (!$conversation->isEmpty()) {
+                // $conversation = Conversation::create();
+                // $conversation->users()->saveMany([$user, $rUser]);
+            }
+        }
+    }
+
     return $app->version();
 });
 
@@ -32,13 +47,19 @@ $app->get('/users', function(Request $request) {
 });
 
 $app->get('/conversations/{user_id}', function($user_id) {
-	$conversations = User::find(1)->conversations()->withoutUser(1)->messagesCount()->get();
+	$conversations = User::find($user_id)->conversations()->withoutUser($user_id)->messagesCount()->get();
+	// return DB::getQueryLog();
 	$conversations = $conversations->each(function($item) {
-		$item['user'] = $item['users'][0];
+		$item['user'] = $item['users']->first();
 		unset($item['users']);
 		return $item;
 	});
 	return response($conversations)->header('Access-Control-Allow-Origin', '*');
+});
+
+$app->get('/messages/{conv_id}', function($conv_id) {
+	$messages = Conversation::find($conv_id)->messages;
+	return response($messages)->header('Access-Control-Allow-Origin', '*');
 });
 
 $app->post('/auth/login', ['uses' => 'AuthController@login']);

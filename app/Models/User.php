@@ -33,7 +33,7 @@ class User extends Model implements
         'nickname', 'email', 'password'
     ];
 
-    protected $hidden = ['pivot'];
+    // protected $hidden = ['pivot'];
 
     public function comments()
     {
@@ -79,5 +79,11 @@ class User extends Model implements
     public function getHaveConversationWithAttribute($value, $user_id)
     {
         return $this->conversations->intersect(static::find($user_id)->conversations);
+    }
+
+    public function toArray()
+    {
+        $this->setHidden(['pivot']);
+        return parent::toArray();
     }
 }
