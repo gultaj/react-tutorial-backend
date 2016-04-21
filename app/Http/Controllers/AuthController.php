@@ -41,5 +41,20 @@ class AuthController extends Controller
             ->header('Access-Control-Allow-Origin', '*');
     }
 
+    public function register(Request $request)
+    {
+        $rules = [
+            'email' => 'required|unique:users|email',
+            'nickname' => 'required|unique:users|max:50',
+            'password' => 'required|min:6|max:12|confirmed'
+        ];
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response(['success' => false, 'message' => $validator->errors()->first()])->header('Access-Control-Allow-Origin', '*');
+        }
+        User::create($request->only('email', 'nickname', 'password'));
+        return response(['success' => true])->header('Access-Control-Allow-Origin', '*');
+    }
+
     
 }
