@@ -7,21 +7,12 @@ use App\Models\Conversation;
 
 $app->get('/', function () use ($app) {
 
-	$users = User::get();
-	dd(User::find(3)->conversations);
-    foreach ($users as $user) {
-        for($i = 0, $count = rand(0, 5); $i < $count; $i++) {
-            $rUser = $users->random();
-            $conversation = $user->conversations->intersect($rUser->conversations);
-            dd(!$conversation);
-            if (!$conversation->isEmpty()) {
-                // $conversation = Conversation::create();
-                // $conversation->users()->saveMany([$user, $rUser]);
-            }
-        }
-    }
 
     return $app->version();
+});
+
+$app->post('/test', function (Request $request) {
+	return response($request->headers->get('token'))->header('Access-Control-Allow-Origin', '*');
 });
 
 $app->get('/comments', function(Request $request) {
