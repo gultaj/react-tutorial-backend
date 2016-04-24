@@ -30,7 +30,6 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // return response($request->input('token'))->header('Access-Control-Allow-Origin', '*');
         if (!is_null($token = $request->input('token'))) {
             if ($user = User::where('remember_token', $token)->first()) {
                 $user->remember_token = null;
