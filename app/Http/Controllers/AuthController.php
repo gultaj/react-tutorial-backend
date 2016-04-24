@@ -57,5 +57,14 @@ class AuthController extends Controller
         return response(['success' => true])->header('Access-Control-Allow-Origin', '*');
     }
 
+    public function getUser(Request $request)
+    {
+        $token = $request->input('token');
+        $validator = \Validator::make([$token], ['token' => 'required|min:1']);
+        if ($validator->fails() and !($user = User::loggedUser($token)->first())) {
+            return response(['success' => false])->header('Access-Control-Allow-Origin', '*');
+        }
+        return response(['success' => true, 'user' => $user])->header('Access-Control-Allow-Origin', '*');
+    }
     
 }

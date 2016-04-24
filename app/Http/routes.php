@@ -56,4 +56,5 @@ $app->get('/messages/{conv_id}', function($conv_id) {
 $app->post('/auth/login', ['uses' => 'AuthController@login']);
 $app->post('/auth/logout', ['uses' => 'AuthController@logout']);
 $app->post('/auth/register', ['uses' => 'AuthController@register']);
+$app->post('/auth/user', ['uses' => 'AuthController@getUser']);
 

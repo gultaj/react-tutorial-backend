@@ -81,6 +81,11 @@ class User extends Model implements
         return $this->conversations->intersect(static::find($user_id)->conversations);
     }
 
+    public function scopeLoggedUser($query, $token)
+    {
+        return $query->where('remember_token', $token)->select('id', 'nickname', 'avatar', 'first_name', 'last_name');
+    }
+
     public function toArray()
     {
         $this->setHidden(['pivot']);
