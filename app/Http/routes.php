@@ -37,8 +37,10 @@ $app->get('/users', function(Request $request) {
 	return response()->json($users)->header('Access-Control-Allow-Origin', '*');
 });
 
-$app->get('/conversations/{user_id}', function($user_id) {
-	$conversations = User::find($user_id)->conversations()->withoutUser($user_id)->messagesCount()->get();
+$app->post('/conversations', function(Request $request) {
+	$user = User::where('remember_token', $request->input('token'))->first();
+	// return response($user)->header('Access-Control-Allow-Origin', '*');
+	$conversations = $user->conversations()->withoutUser($user->id)->messagesCount()->get();
 	// return DB::getQueryLog();
 	$conversations = $conversations->each(function($item) {
 		$item['user'] = $item['users']->first();
