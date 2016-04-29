@@ -23,10 +23,10 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-if (env('APP_DEBUG')) {
-    $app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
-    $app->configure('debugbar');
-}
+// if (env('APP_DEBUG')) {
+//     $app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
+//     $app->configure('debugbar');
+// }
 
 
 
@@ -69,7 +69,7 @@ $app->singleton(
 */
 
 $app->middleware([
-   App\Http\Middleware\ExampleMiddleware::class
+    App\Http\Middleware\CorsMiddleware::class
 ]);
 
 $app->routeMiddleware([
@@ -88,9 +88,9 @@ $app->routeMiddleware([
 */
 
 $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+// $app->register(Barryvdh\Cors\LumenServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
-
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

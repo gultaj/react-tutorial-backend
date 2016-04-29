@@ -10,9 +10,12 @@ $app->get('/', function () use ($app) {
 
     return $app->version();
 });
-
-$app->post('/test', function (Request $request) {
-	return response($request->headers->get('token'))->header('Access-Control-Allow-Origin', '*');
+$app->group(['middleware' => 'auth'], function ($app) {
+	$app->post('/test', function (Request $request) {
+	return response(['user' => Auth::user()])->header('Access-Control-Allow-Origin', '*');
+		return response(['token' => $request->headers->get('X-Token')])->header('Access-Control-Allow-Origin', '*')
+		->header('Access-Control-Allow-Headers', 'Content-Type, X-Token');
+	});
 });
 
 $app->get('/comments', function(Request $request) {
@@ -36,18 +39,19 @@ $app->get('/users', function(Request $request) {
 
 	return response()->json($users)->header('Access-Control-Allow-Origin', '*');
 });
+$app->group(['middleware' => 'auth'], function ($app) {
+	$app->post('/conversations', function(Request $request) {
+		$user = Auth::user();
 
-$app->post('/conversations', function(Request $request) {
-	$user = User::where('remember_token', $request->input('token'))->first();
-	// return response($user)->header('Access-Control-Allow-Origin', '*');
-	$conversations = $user->conversations()->withoutUser($user->id)->messagesCount()->get();
-	// return DB::getQueryLog();
-	$conversations = $conversations->each(function($item) {
-		$item['user'] = $item['users']->first();
-		unset($item['users']);
-		return $item;
+		$conversations = $user->conversations()->withoutUser($user->id)->messagesCount()->get();
+
+		$conversations = $conversations->each(function($item) {
+			$item['user'] = $item['users']->first();
+			unset($item['users']);
+			return $item;
+		});
+		return response($conversations)->header('Access-Control-Allow-Origin', '*');
 	});
-	return response($conversations)->header('Access-Control-Allow-Origin', '*');
 });
 
 $app->get('/messages/{conv_id}', function($conv_id) {
