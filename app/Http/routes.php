@@ -50,14 +50,17 @@ $app->group(['middleware' => 'auth'], function ($app) {
 			unset($item['users']);
 			return $item;
 		});
-		return response($conversations)->header('Access-Control-Allow-Origin', '*');
+		return response(['success' => true, 'conversations' => $conversations])
+			->header('Access-Control-Allow-Origin', '*');
+	});
+	
+	$app->post('/messages/{conv_id}', function(Request $request, $conv_id) {
+		$messages = Conversation::find($conv_id)->messages;
+		return response(['success' => true, 'messages' => $messages])
+			->header('Access-Control-Allow-Origin', '*');
 	});
 });
 
-$app->get('/messages/{conv_id}', function($conv_id) {
-	$messages = Conversation::find($conv_id)->messages;
-	return response($messages)->header('Access-Control-Allow-Origin', '*');
-});
 
 $app->post('/auth/login', ['uses' => 'AuthController@login']);
 $app->post('/auth/logout', ['uses' => 'AuthController@logout']);
