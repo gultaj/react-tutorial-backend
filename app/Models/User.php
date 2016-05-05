@@ -73,7 +73,7 @@ class User extends Model implements
 
     public function getAvatarAttribute($value)
     {
-        return 'uploads/'.$value;
+        return '//reactcomments.dev/'.$value;
     }
 
     public function getHaveConversationWithAttribute($value, $user_id)
