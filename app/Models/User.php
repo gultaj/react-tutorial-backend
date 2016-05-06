@@ -33,6 +33,8 @@ class User extends Model implements
         'nickname', 'email', 'password'
     ];
 
+    protected $appends = ['full_name'];
+
     // protected $hidden = ['pivot'];
 
     public function comments()
@@ -74,6 +76,11 @@ class User extends Model implements
     public function getAvatarAttribute($value)
     {
         return '//reactcomments.dev/'.$value;
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function getHaveConversationWithAttribute($value, $user_id)
