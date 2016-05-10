@@ -53,6 +53,10 @@ $app->group(['middleware' => 'auth'], function ($app) {
 		return response(['success' => true, 'conversations' => $conversations])
 			->header('Access-Control-Allow-Origin', '*');
 	});
+	$app->post('/conversations/last_id', function(Request $request) {
+		$conv_id = Auth::user()->messages()->orderBy('created_at', 'desc')->first()->conversation_id;
+		return response(['success' => true, 'conv_id' => $conv_id])->header('Access-Control-Allow-Origin', '*');
+	});
 	
 	$app->post('/messages/{conv_id}', function(Request $request, $conv_id) {
 		$messages = Conversation::find($conv_id)->messages;

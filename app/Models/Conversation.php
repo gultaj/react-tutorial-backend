@@ -43,7 +43,7 @@ class Conversation extends Model {
             'users' => function($q) use ($user_id) {
                 $q->where('user_id', '<>', $user_id);
             }
-        ]);
+        ])->orderBy('created_at', 'desc');
     }
 
     public function toArray()
